@@ -650,7 +650,47 @@ rpcs::checkduplicate_and_update(unsigned int clt_nonce, unsigned int xid,
 	ScopedLock rwl(&reply_window_m_);
 
         // You fill this in for Lab 1.
-	return NEW;
+    rpcstate_t r = NEW;
+
+    std::list<reply_t> &xid_list = reply_window_[clt_nonce];
+    std::list<reply_t>::iterator itr;
+    if (!xid_list.empty() && xid < xid_list.front().xid) {
+        r = FORGOTTEN;
+    } else {
+        for (itr = xid_list.begin(); itr != xid_list.end(); ++itr) {
+            if (itr->xid == xid) {
+                // a duplicate
+                if (itr->cb_present) {
+                    r = DONE;
+                    *b = itr->buf;
+                    *sz = itr->sz;
+                } else {
+                    r = INPROGRESS;
+                }
+            }
+        }
+    }
+
+    if (r == NEW) {
+        reply_t r(xid);
+        r.cb_present = false; // explicitly set this field to false
+        for (itr = xid_list.begin(); itr != xid_list.end(); ++itr) {
+            if (itr->xid > xid) {
+                xid_list.insert(itr, r);
+                break;
+            }
+        }
+        if (xid_list.empty() || xid_list.back().xid < xid) {
+            xid_list.push_back(r);
+        }
+    }
+
+    // we can safely forget all those replies whose xid < xid_rep (NOT  <=)
+    while (xid_list.front().xid < xid_rep) {
+        xid_list.pop_front();
+    }
+
+	return r;
 }
 
 // rpcs::dispatch calls add_reply when it is sending a reply to an RPC,
@@ -664,6 +704,16 @@ rpcs::add_reply(unsigned int clt_nonce, unsigned int xid,
 {
 	ScopedLock rwl(&reply_window_m_);
         // You fill this in for Lab 1.
+    std::list<reply_t> &rw = reply_window_[clt_nonce];
+    std::list<reply_t>::iterator itr;
+    for (itr = rw.begin(); itr != rw.end(); ++itr) {
+        if (itr->xid == xid) {
+            itr->buf = b;
+            itr->sz = sz;
+            itr->cb_present = true;
+            return;
+        }
+    }
 }
 
 void
