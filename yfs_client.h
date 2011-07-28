@@ -46,9 +46,9 @@ class yfs_client {
   int getdir(inum, dirinfo &);
 
   // added by me
-  inum creat(inum parent, std::string name);
-  int listdir(inum, std::vector<dirent> &);
-  inum ilookup(inum di, std::string name);
+  inum create(inum parent, std::string name);
+  int readdir(inum, std::vector<dirent> &);
+  inum lookup(inum di, std::string name);
   int setattr(inum, off_t, struct stat&);
   int read(inum, size_t, off_t, char*, size_t&);
   int write(inum, const char*, size_t, off_t, size_t&);

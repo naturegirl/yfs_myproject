@@ -141,7 +141,7 @@ fuseserver_createhelper(fuse_ino_t parent, const char *name,
   // You fill this in for Lab 2
   int r = yfs_client::NOENT;
 
-  fuse_ino_t new_ino = (fuse_ino_t)yfs->creat(parent, name);
+  fuse_ino_t new_ino = (fuse_ino_t)yfs->create(parent, name);
   if (new_ino > 0) {
     memset(e, 0, sizeof(struct fuse_entry_param));
     e->ino = new_ino;
@@ -198,7 +198,7 @@ fuseserver_lookup(fuse_req_t req, fuse_ino_t parent, const char *name)
   // `parent' in YFS. If the file was found, initialize e.ino and
   // e.attr appropriately.
 
-  yfs_client::inum item = yfs->ilookup(parent, name);
+  yfs_client::inum item = yfs->lookup(parent, name);
   if (item) {
 	  e.ino = (fuse_ino_t) item;
 	  if (getattr(e.ino, e.attr) != yfs_client::OK)
@@ -267,7 +267,7 @@ fuseserver_readdir(fuse_req_t req, fuse_ino_t ino, size_t size,
 
   	// hope this is right
   std::vector<yfs_client::dirent> entries;
-  if (yfs->listdir(inum, entries) == yfs_client::OK) {
+  if (yfs->readdir(inum, entries) == yfs_client::OK) {
     std::vector<yfs_client::dirent>::iterator it;
     for (it = entries.begin(); it != entries.end(); ++it) {
       dirbuf_add(&b, it->name.c_str(), it->inum);

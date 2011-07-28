@@ -73,7 +73,7 @@ yfs_client::getfile(inum inum, fileinfo &fin)
 // added by me
 // lookup a file in a directory
 yfs_client::inum
-yfs_client::ilookup(inum di, std::string name)
+yfs_client::lookup(inum di, std::string name)
 {
 	  std::string buf;
 	  if (ec->get(di, buf) == extent_protocol::OK) {
@@ -121,7 +121,7 @@ yfs_client::getdir(inum inum, dirinfo &din)
 // read buf. Possible error: buf format error -> RPCERROR
 // on success: read them all into &entries and return ok
 int
-yfs_client::listdir(inum inum, std::vector<dirent> &entries)
+yfs_client::readdir(inum inum, std::vector<dirent> &entries)
 {
   int r = OK;
   std::string buf;
@@ -163,7 +163,7 @@ yfs_client::listdir(inum inum, std::vector<dirent> &entries)
  * write os back into dir buffer
  */
 yfs_client::inum
-yfs_client::creat(inum parent, std::string name)
+yfs_client::create(inum parent, std::string name)
 {
   std::string buf;
   inum new_inum = -1;
