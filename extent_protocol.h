@@ -14,7 +14,11 @@ class extent_protocol {
     put = 0x6001,
     get,
     getattr,
-    remove
+    remove, /* removes a specified buf */
+    pget, /* get partial content of a buf */
+    update, /* update specified range of a buf */
+    resize, /* resize a specified buf */
+    poke /* check if an inum exists; does not return content */
   };
 
   struct attr {
