@@ -294,6 +294,8 @@ fuseserver_mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
      mode_t mode)
 {
   struct fuse_entry_param e;
+
+  printf("fuseserver_readdir\n");
   // In yfs, timeouts are always set to 0.0, and generations are always set to 0
   e.attr_timeout = 0.0;
   e.entry_timeout = 0.0;
@@ -301,12 +303,15 @@ fuseserver_mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
 
   // You fill this in for Lab 3
 
+  yfs->mkdir(parent, name);
+/*
   // Todo ??
 #if 0
   fuse_reply_entry(req, &e);
 #else
   fuse_reply_err(req, ENOSYS);
 #endif
+*/
 }
 
 void
