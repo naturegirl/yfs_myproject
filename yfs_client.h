@@ -11,7 +11,7 @@ class yfs_client {
   extent_client *ec;
  public:
 
-  typedef unsigned long long inum;
+  typedef unsigned long long inum;	// 64 bit identifier
   enum xxstatus { OK, RPCERR, NOENT, IOERR, FBIG, EXIST };
   typedef int status;
 

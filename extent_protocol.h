@@ -8,7 +8,7 @@
 class extent_protocol {
  public:
   typedef int status;
-  typedef unsigned long long extentid_t;
+  typedef unsigned long long extentid_t;	// 64 bit?
   enum xxstatus { OK, RPCERR, NOENT, IOERR };
   enum rpc_numbers {
     put = 0x6001,
@@ -18,10 +18,10 @@ class extent_protocol {
   };
 
   struct attr {
-    unsigned int atime;
-    unsigned int mtime;
-    unsigned int ctime;
-    unsigned int size;
+    unsigned int atime;	// access time
+    unsigned int mtime;	// modification time
+    unsigned int ctime;	// change attributes. Touch?
+    unsigned int size;	// size
   };
 };
 
