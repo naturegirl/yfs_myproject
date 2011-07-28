@@ -40,13 +40,15 @@ class yfs_client {
 
   bool isfile(inum);
   bool isdir(inum);
-  inum ilookup(inum di, std::string name);	// added by me
+
 
   int getfile(inum, fileinfo &);
   int getdir(inum, dirinfo &);
 
   inum creat(inum parent, std::string name);	// added by me
   int listdir(inum, std::vector<dirent> &);
+  inum ilookup(inum di, std::string name);	// added by me
+  int setattr(inum, off_t, struct stat&);
 };
 
 #endif 

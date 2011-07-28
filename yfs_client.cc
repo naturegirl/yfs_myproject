@@ -216,3 +216,19 @@ routine:
   return new_inum;
 }
 
+// added by me
+int
+yfs_client::setattr(inum inum, off_t size, struct stat& st)
+{
+	std::string buf;
+	if(ec->get(inum,buf) == extent_protocol::NOENT)
+		return NOENT;
+	extent_protocol::attr a;
+	ec->getattr(inum, a);
+
+	buf.resize(size);
+	ec->put(file,buf);
+
+	return OK;
+}
+
