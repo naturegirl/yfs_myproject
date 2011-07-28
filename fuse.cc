@@ -108,7 +108,7 @@ fuseserver_read(fuse_req_t req, fuse_ino_t ino, size_t size,
 	if (yfs->read(ino, size, off, buf, n) == yfs_client::OK)
 		fuse_reply_buf(req, buf, n);
 	else
-		fuse_reply_buf(req, ENOENT);
+		fuse_reply_err(req, ENOENT);
 	free(buf);
 }
 
