@@ -1,0 +1,5 @@
+Steps:
+- implemented put(), get(), getattr() and remove() in extent_server.cc
+- added to yfs_client: create(), readdir(), lookup(), setattr(), read(), write()
+- implemented in fuse: createhelper(), write(), lookup(), ... and the 
+	ones that correspond to yfs_client
