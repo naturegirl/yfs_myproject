@@ -36,7 +36,6 @@ class extent_server {
 
  private:
   std::map<extent_protocol::extentid_t, extent_entry> extent_store;
-  pthread_mutex_t m;
 
   void _put(extent_protocol::extentid_t id, std::string &);
   void _put(extent_protocol::extentid_t id, const char *);

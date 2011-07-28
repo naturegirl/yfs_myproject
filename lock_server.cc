@@ -6,6 +6,10 @@
 #include <unistd.h>
 #include <arpa/inet.h>
 
+// the following implementation is prone to cause distributed deadlocks
+// for that RPC handlers at the server side is blocked by a conditional
+// variable
+
 lock_entry::lock_entry()
     : acquired(false)
 {
@@ -59,6 +63,9 @@ lock_server::stat(int clt, lock_protocol::lockid_t lid, int &r)
 lock_protocol::status
 lock_server::acquire(int clt, lock_protocol::lockid_t lid, int &unused)
 {
+  // check the availability of the specified lock.
+  // if it is available or brand new, then grant it. if it is not, we
+  //  add this acquisition request to the retrier queue and return RETRY.
   lock_protocol::status ret = lock_protocol::OK;
   locks[lid].acquire();
   return ret;

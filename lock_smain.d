@@ -92,4 +92,9 @@ lock_smain.o: lock_smain.cc rpc/rpc.h /usr/include/sys/socket.h \
  /usr/include/arpa/inet.h rpc/pollmgr.h /usr/include/sys/epoll.h \
  /usr/include/libio.h /usr/include/_G_config.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- lock_server.h lock_protocol.h lock_client.h rpc/jsl_log.h
+ lock_server_cache.h /usr/include/c++/4.4/deque \
+ /usr/include/c++/4.4/bits/stl_deque.h \
+ /usr/include/c++/4.4/bits/deque.tcc /usr/include/c++/4.4/set \
+ /usr/include/c++/4.4/bits/stl_set.h \
+ /usr/include/c++/4.4/bits/stl_multiset.h lock_protocol.h lock_server.h \
+ lock_client.h rpc/jsl_log.h

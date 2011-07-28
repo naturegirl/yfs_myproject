@@ -10,11 +10,7 @@
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
-<<<<<<< HEAD
-#include "lang/verify.h"
 #include "lock_client_cache.h"
-=======
->>>>>>> lab3
 
 // must be >= 2
 int nt = 10; //XXX: lab1's rpc handlers are blocking. Since rpcs uses a thread pool of 10 threads, we cannot test more than 10 blocking rpc.
@@ -239,6 +235,11 @@ main(int argc, char *argv[])
 	pthread_join(th[i], NULL);
       }
     }
+
+    for (int i = 0; i < nt; i++) {
+      delete lc[i];
+    }
+    delete [] lc;
 
     printf ("%s: passed all tests successfully\n", argv[0]);
 

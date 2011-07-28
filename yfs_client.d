@@ -91,7 +91,7 @@ yfs_client.o: yfs_client.cc yfs_client.h /usr/include/c++/4.4/string \
  /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
  /usr/include/alloca.h /usr/include/string.h rpc/connection.h \
  /usr/include/arpa/inet.h rpc/pollmgr.h /usr/include/sys/epoll.h \
- lock_protocol.h lock_client.h /usr/include/libio.h \
+ lock_protocol.h lock_client.h lock_client_cache.h /usr/include/libio.h \
  /usr/include/_G_config.h /usr/include/bits/stdio_lim.h \
  /usr/include/bits/sys_errlist.h /usr/include/sys/stat.h \
  /usr/include/bits/stat.h /usr/include/fcntl.h /usr/include/bits/fcntl.h

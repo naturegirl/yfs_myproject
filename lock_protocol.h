@@ -10,7 +10,6 @@ class lock_protocol {
   enum xxstatus { OK, RETRY, RPCERR, NOENT, IOERR };
   typedef int status;
   typedef unsigned long long lockid_t;
-  typedef unsigned long long xid_t;
   enum rpc_numbers {
     acquire = 0x7001,
     release,

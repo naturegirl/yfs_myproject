@@ -85,15 +85,6 @@ fuseserver_setattr(fuse_req_t req, fuse_ino_t ino, struct stat *attr, int to_set
   if (FUSE_SET_ATTR_SIZE & to_set) {
     printf("   fuseserver_setattr set size to %lld\n", attr->st_size);
     struct stat st;
-<<<<<<< HEAD
-    // You fill this in for Lab 2
-#if 0
-    // Note: fill st using getattr before fuse_reply_attr
-    fuse_reply_attr(req, &st, 0);
-#else
-    fuse_reply_err(req, ENOSYS);
-#endif
-=======
     // You fill this in
     yfs_client::inum inum = ino;
     if (yfs->isfile(inum)) {
@@ -106,7 +97,6 @@ fuseserver_setattr(fuse_req_t req, fuse_ino_t ino, struct stat *attr, int to_set
     } else {
       fuse_reply_err(req, EISDIR);
     }
->>>>>>> lab3
   } else {
     fuse_reply_err(req, ENOSYS);
   }
