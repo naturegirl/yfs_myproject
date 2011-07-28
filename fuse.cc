@@ -135,9 +135,11 @@ fuseserver_createhelper(fuse_ino_t parent, const char *name,
      mode_t mode, struct fuse_entry_param *e)
 {
   // In yfs, timeouts are always set to 0.0, and generations are always set to 0
+	/*
   e->attr_timeout = 0.0;
   e->entry_timeout = 0.0;
   e->generation = 0;
+  */
   // You fill this in for Lab 2
   int r = yfs_client::NOENT;
 
