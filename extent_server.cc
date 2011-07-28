@@ -20,7 +20,7 @@ int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &)
 	  entry.buf = buf;						// set content
 	  time((time_t *)&entry.attr.mtime);	// set modification and touch time
 	  time((time_t *)&entry.attr.ctime);
-	  entry.attr.size = buf.size();
+	  //entry.attr.size = buf.size();
 	  pthread_mutex_unlock(&m);
 	  return r;
 }
@@ -50,7 +50,7 @@ int extent_server::getattr(extent_protocol::extentid_t id, extent_protocol::attr
 	pthread_mutex_lock(&m);
 	if (extent_store.find(id) != extent_store.end()) {
 		extent_entry &entry = extent_store[id];
-		a.size = entry.attr.size;	// has been set in put according to buf.size()
+		a.size = entry.buf.size();	// has been set in put according to buf.size()
 		a.atime = entry.attr.atime;
 		a.ctime = entry.attr.ctime;
 		a.mtime = entry.attr.mtime;
