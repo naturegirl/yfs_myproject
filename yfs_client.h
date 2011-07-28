@@ -56,6 +56,9 @@ class yfs_client {
   int read(inum, size_t, off_t, char*, size_t&);
   int write(inum, const char*, size_t, off_t, size_t&);
 
+  // added by me lab3
+  inum mkdir(inum parent, std::string name);
+
 };
 
 #endif 

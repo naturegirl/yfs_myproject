@@ -221,6 +221,61 @@ routine:
   return new_inum;
 }
 
+// added by me
+// lab3
+yfs_client::inum
+yfs_client::mkdir(inum parent, std::string name)
+{
+  std::string buf;
+  inum new_inum = -1;
+  extent_protocol::status ret;
+  ret = ec->get(parent, buf);
+  if (ret == extent_protocol::OK) {
+routine:
+    new_inum = (inum)(random() & 0x7fffffff);	// random number for inum
+    std::istringstream is(buf);
+    std::ostringstream os;
+    std::string line;
+
+    bool inserted = false;
+    int i = 0;
+    while (getline(is, line)) {
+      if (line != "") {
+        size_t len = line.length();
+        std::string::size_type colon_pos;
+        colon_pos = line.find(':');
+        if (colon_pos != std::string::npos && colon_pos != 0 &&
+            colon_pos != len - 1) {
+          inum cur = atol(line.substr(colon_pos+1).c_str());
+          if (cur == new_inum) {
+            // the very slight chance of collition occured. New number...
+            goto routine;
+          }
+          if (cur > new_inum && !inserted) {	// it's sorted in order of inum
+            // insert a line in this place
+            os << name << ":" << new_inum << std::endl;
+            ec->put(new_inum, "");
+            inserted = true;
+          }
+          os << line << std::endl;
+          i++;
+        } else {	// bad format of ":"
+          printf("malformed line in directory %llx meta: %s\n", parent,
+              line.c_str());
+        }
+      }
+    }
+    if (!inserted) {	// insert at end
+      os << name << ":" << new_inum << std::endl;
+      ec->put(new_inum, "");
+    }
+
+    // update content of os into parent directory
+    buf = os.str();
+    ec->put(parent, buf);
+  }
+  return new_inum;
+}
 
 // added by me
 int
