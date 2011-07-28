@@ -8,13 +8,8 @@ rpc/thr_pool.o: rpc/thr_pool.cc rpc/slock.h /usr/include/pthread.h \
  /usr/lib/gcc/i686-linux-gnu/4.4.5/include/stddef.h /usr/include/time.h \
  /usr/include/bits/sched.h /usr/include/bits/time.h \
  /usr/include/xlocale.h /usr/include/bits/pthreadtypes.h \
- /usr/include/bits/setjmp.h lang/verify.h /usr/include/stdlib.h \
- /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
- /usr/include/sys/types.h /usr/include/sys/select.h \
- /usr/include/bits/select.h /usr/include/bits/sigset.h \
- /usr/include/sys/sysmacros.h /usr/include/alloca.h /usr/include/assert.h \
- rpc/thr_pool.h /usr/include/c++/4.4/vector \
- /usr/include/c++/4.4/bits/stl_algobase.h \
+ /usr/include/bits/setjmp.h /usr/include/assert.h rpc/thr_pool.h \
+ /usr/include/c++/4.4/vector /usr/include/c++/4.4/bits/stl_algobase.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/c++config.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/os_defines.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/cpu_defines.h \
@@ -41,4 +36,8 @@ rpc/thr_pool.o: rpc/thr_pool.cc rpc/slock.h /usr/include/pthread.h \
  /usr/include/asm/errno.h /usr/include/asm-generic/errno.h \
  /usr/include/asm-generic/errno-base.h /usr/include/c++/4.4/list \
  /usr/include/c++/4.4/bits/stl_list.h /usr/include/c++/4.4/bits/list.tcc \
- /usr/include/sys/time.h
+ /usr/include/sys/time.h /usr/include/sys/select.h \
+ /usr/include/bits/select.h /usr/include/bits/sigset.h \
+ /usr/include/stdlib.h /usr/include/bits/waitflags.h \
+ /usr/include/bits/waitstatus.h /usr/include/sys/types.h \
+ /usr/include/sys/sysmacros.h /usr/include/alloca.h

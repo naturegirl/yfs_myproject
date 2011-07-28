@@ -16,14 +16,14 @@ rpc/pollmgr.o: rpc/pollmgr.cc /usr/include/sys/time.h \
  /usr/include/bits/posix_opt.h /usr/include/bits/environments.h \
  /usr/include/bits/confname.h /usr/include/getopt.h rpc/slock.h \
  /usr/include/pthread.h /usr/include/sched.h /usr/include/bits/sched.h \
- /usr/include/xlocale.h /usr/include/bits/setjmp.h lang/verify.h \
- /usr/include/stdlib.h /usr/include/bits/waitflags.h \
- /usr/include/bits/waitstatus.h /usr/include/alloca.h \
- /usr/include/assert.h rpc/jsl_log.h rpc/method_thread.h \
- /usr/include/stdio.h /usr/include/libio.h /usr/include/_G_config.h \
- /usr/include/wchar.h /usr/lib/gcc/i686-linux-gnu/4.4.5/include/stdarg.h \
+ /usr/include/xlocale.h /usr/include/bits/setjmp.h /usr/include/assert.h \
+ rpc/jsl_log.h rpc/method_thread.h /usr/include/stdio.h \
+ /usr/include/libio.h /usr/include/_G_config.h /usr/include/wchar.h \
+ /usr/lib/gcc/i686-linux-gnu/4.4.5/include/stdarg.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h \
- /usr/include/string.h rpc/pollmgr.h /usr/include/c++/4.4/vector \
+ /usr/include/string.h /usr/include/stdlib.h \
+ /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
+ /usr/include/alloca.h rpc/pollmgr.h /usr/include/c++/4.4/vector \
  /usr/include/c++/4.4/bits/stl_algobase.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/c++config.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/os_defines.h \

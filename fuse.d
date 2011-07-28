@@ -28,12 +28,12 @@ fuse.o: fuse.cc /usr/include/fuse/fuse_lowlevel.h \
  /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
  /usr/include/unistd.h /usr/include/bits/posix_opt.h \
  /usr/include/bits/environments.h /usr/include/bits/confname.h \
- /usr/include/getopt.h /usr/include/arpa/inet.h /usr/include/netinet/in.h \
- /usr/include/sys/socket.h /usr/include/bits/socket.h \
- /usr/include/bits/sockaddr.h /usr/include/asm/socket.h \
- /usr/include/asm-generic/socket.h /usr/include/asm/sockios.h \
- /usr/include/asm-generic/sockios.h /usr/include/bits/in.h lang/verify.h \
- /usr/include/assert.h yfs_client.h /usr/include/c++/4.4/string \
+ /usr/include/getopt.h /usr/include/assert.h /usr/include/arpa/inet.h \
+ /usr/include/netinet/in.h /usr/include/sys/socket.h \
+ /usr/include/bits/socket.h /usr/include/bits/sockaddr.h \
+ /usr/include/asm/socket.h /usr/include/asm-generic/socket.h \
+ /usr/include/asm/sockios.h /usr/include/asm-generic/sockios.h \
+ /usr/include/bits/in.h yfs_client.h /usr/include/c++/4.4/string \
  /usr/include/c++/4.4/i686-linux-gnu/bits/c++config.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/os_defines.h \
  /usr/include/c++/4.4/i686-linux-gnu/bits/cpu_defines.h \
@@ -82,7 +82,7 @@ fuse.o: fuse.cc /usr/include/fuse/fuse_lowlevel.h \
  /usr/include/c++/4.4/bits/stl_vector.h \
  /usr/include/c++/4.4/bits/stl_bvector.h \
  /usr/include/c++/4.4/bits/vector.tcc rpc/fifo.h /usr/include/sys/time.h \
- rpc/slock.h lang/verify.h rpc/marshall.h /usr/include/c++/4.4/iostream \
+ rpc/slock.h rpc/marshall.h /usr/include/c++/4.4/iostream \
  /usr/include/c++/4.4/ostream /usr/include/c++/4.4/ios \
  /usr/include/c++/4.4/bits/ios_base.h \
  /usr/include/c++/4.4/bits/locale_classes.h \
@@ -98,5 +98,5 @@ fuse.o: fuse.cc /usr/include/fuse/fuse_lowlevel.h \
  /usr/include/c++/4.4/bits/basic_ios.tcc \
  /usr/include/c++/4.4/bits/ostream.tcc /usr/include/c++/4.4/istream \
  /usr/include/c++/4.4/bits/istream.tcc /usr/include/c++/4.4/sstream \
- /usr/include/c++/4.4/bits/sstream.tcc lang/algorithm.h rpc/connection.h \
- rpc/pollmgr.h /usr/include/sys/epoll.h lock_protocol.h lock_client.h
+ /usr/include/c++/4.4/bits/sstream.tcc rpc/connection.h rpc/pollmgr.h \
+ /usr/include/sys/epoll.h lock_protocol.h lock_client.h

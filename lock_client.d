@@ -66,13 +66,11 @@ lock_client.o: lock_client.cc lock_client.h /usr/include/c++/4.4/string \
  /usr/include/c++/4.4/bits/stl_uninitialized.h \
  /usr/include/c++/4.4/bits/stl_vector.h \
  /usr/include/c++/4.4/bits/stl_bvector.h \
- /usr/include/c++/4.4/bits/vector.tcc rpc/fifo.h /usr/include/errno.h \
- /usr/include/bits/errno.h /usr/include/linux/errno.h \
- /usr/include/asm/errno.h /usr/include/asm-generic/errno.h \
- /usr/include/asm-generic/errno-base.h /usr/include/sys/time.h \
- rpc/slock.h lang/verify.h /usr/include/stdlib.h \
- /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
- /usr/include/alloca.h /usr/include/assert.h rpc/marshall.h \
+ /usr/include/c++/4.4/bits/vector.tcc rpc/fifo.h /usr/include/assert.h \
+ /usr/include/errno.h /usr/include/bits/errno.h \
+ /usr/include/linux/errno.h /usr/include/asm/errno.h \
+ /usr/include/asm-generic/errno.h /usr/include/asm-generic/errno-base.h \
+ /usr/include/sys/time.h rpc/slock.h rpc/marshall.h \
  /usr/include/c++/4.4/iostream /usr/include/c++/4.4/ostream \
  /usr/include/c++/4.4/ios /usr/include/c++/4.4/bits/ios_base.h \
  /usr/include/c++/4.4/bits/locale_classes.h \
@@ -88,7 +86,9 @@ lock_client.o: lock_client.cc lock_client.h /usr/include/c++/4.4/string \
  /usr/include/c++/4.4/bits/basic_ios.tcc \
  /usr/include/c++/4.4/bits/ostream.tcc /usr/include/c++/4.4/istream \
  /usr/include/c++/4.4/bits/istream.tcc /usr/include/c++/4.4/sstream \
- /usr/include/c++/4.4/bits/sstream.tcc /usr/include/string.h \
- lang/algorithm.h rpc/connection.h /usr/include/arpa/inet.h rpc/pollmgr.h \
- /usr/include/sys/epoll.h /usr/include/libio.h /usr/include/_G_config.h \
+ /usr/include/c++/4.4/bits/sstream.tcc /usr/include/stdlib.h \
+ /usr/include/bits/waitflags.h /usr/include/bits/waitstatus.h \
+ /usr/include/alloca.h /usr/include/string.h rpc/connection.h \
+ /usr/include/arpa/inet.h rpc/pollmgr.h /usr/include/sys/epoll.h \
+ /usr/include/libio.h /usr/include/_G_config.h \
  /usr/include/bits/stdio_lim.h /usr/include/bits/sys_errlist.h

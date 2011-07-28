@@ -6,10 +6,11 @@
 #include <string>
 #include <vector>
 #include <map>
+#include <assert.h>
 #include <stdlib.h>
 #include <string.h>
-#include "lang/verify.h"
-#include "lang/algorithm.h"
+
+#define yfs_max(a,b) ((a>b)?a:b)
 
 struct req_header {
 	req_header(int x=0, int p=0, int c = 0, int s = 0, int xi = 0):
@@ -35,9 +36,9 @@ enum {
 	DEFAULT_RPC_SZ = 1024,
 #if RPC_CHECKSUMMING
 	//size of rpc_header includes a 4-byte int to be filled by tcpchan and uint64_t checksum
-	RPC_HEADER_SZ = static_max<sizeof(req_header), sizeof(reply_header)>::value + sizeof(rpc_sz_t) + sizeof(rpc_checksum_t)
+	RPC_HEADER_SZ = yfs_max(sizeof(req_header), sizeof(reply_header)) + sizeof(rpc_sz_t) + sizeof(rpc_checksum_t)
 #else
-		RPC_HEADER_SZ = static_max<sizeof(req_header), sizeof(reply_header)>::value + sizeof(rpc_sz_t)
+		RPC_HEADER_SZ = yfs_max(sizeof(req_header), sizeof(reply_header)) + sizeof(rpc_sz_t)
 #endif
 };
 
@@ -50,7 +51,7 @@ class marshall {
 	public:
 		marshall() {
 			_buf = (char *) malloc(sizeof(char)*DEFAULT_RPC_SZ);
-			VERIFY(_buf);
+			assert(_buf);
 			_capa = DEFAULT_RPC_SZ;
 			_ind = RPC_HEADER_SZ;
 		}
@@ -66,14 +67,10 @@ class marshall {
 		void rawbyte(unsigned char);
 		void rawbytes(const char *, int);
 
-		// Return the current content (excluding header) as a string
-		std::string get_content() { 
-			return std::string(_buf+RPC_HEADER_SZ,_ind-RPC_HEADER_SZ);
-		}
-
-		// Return the current content (excluding header) as a string
-		std::string str() {
-			return get_content();
+		// Return the current contents (including header) as a string
+		const std::string str() const {
+			std::string tmps = std::string(_buf,_ind);
+			return tmps;
 		}
 
 		void pack(int i);
@@ -113,7 +110,6 @@ class marshall {
 			return;
 		}
 };
-marshall& operator<<(marshall &, bool);
 marshall& operator<<(marshall &, unsigned int);
 marshall& operator<<(marshall &, int);
 marshall& operator<<(marshall &, unsigned char);
@@ -121,6 +117,7 @@ marshall& operator<<(marshall &, char);
 marshall& operator<<(marshall &, unsigned short);
 marshall& operator<<(marshall &, short);
 marshall& operator<<(marshall &, unsigned long long);
+marshall& operator<<(marshall &, long long int);
 marshall& operator<<(marshall &, const std::string &);
 
 class unmarshall {
@@ -132,28 +129,11 @@ class unmarshall {
 	public:
 		unmarshall(): _buf(NULL),_sz(0),_ind(0),_ok(false) {}
 		unmarshall(char *b, int sz): _buf(b),_sz(sz),_ind(),_ok(true) {}
-		unmarshall(const std::string &s) : _buf(NULL),_sz(0),_ind(0),_ok(false) 
-		{
-			//take the content which does not exclude a RPC header from a string
-			take_content(s);
-		}
 		~unmarshall() {
 			if (_buf) free(_buf);
 		}
-
 		//take contents from another unmarshall object
 		void take_in(unmarshall &another);
-
-		//take the content which does not exclude a RPC header from a string
-		void take_content(const std::string &s) {
-			_sz = s.size()+RPC_HEADER_SZ;
-			_buf = (char *)realloc(_buf,_sz);
-			VERIFY(_buf);
-			_ind = RPC_HEADER_SZ;
-			memcpy(_buf+_ind, s.data(), s.size());
-			_ok = true;
-		}
-
 		bool ok() { return _ok; }
 		char *cstr() { return _buf;}
 		bool okdone();
@@ -196,7 +176,6 @@ class unmarshall {
 		}
 };
 
-unmarshall& operator>>(unmarshall &, bool &);
 unmarshall& operator>>(unmarshall &, unsigned char &);
 unmarshall& operator>>(unmarshall &, char &);
 unmarshall& operator>>(unmarshall &, unsigned short &);
@@ -204,6 +183,7 @@ unmarshall& operator>>(unmarshall &, short &);
 unmarshall& operator>>(unmarshall &, unsigned int &);
 unmarshall& operator>>(unmarshall &, int &);
 unmarshall& operator>>(unmarshall &, unsigned long long &);
+unmarshall& operator>>(unmarshall &, long long int &);
 unmarshall& operator>>(unmarshall &, std::string &);
 
 template <class C> marshall &

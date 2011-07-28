@@ -2,18 +2,18 @@
 
 sub oops {
     my($msg) = @_;
-    print STDERR "test-lab-3-a.pl error: $msg : $!\n";
+    print STDERR "test-lab-4-a.pl error: $msg : $!\n";
     exit(1);
 }
 
 sub oops1 {
     my($msg) = @_;
-    print STDERR "test-lab-3-a.pl error: $msg\n";
+    print STDERR "test-lab-4-a.pl error: $msg\n";
     exit(1);
 }
 
 if($#ARGV != 0){
-    print STDERR "Usage: test-lab-3-a.pl directory\n";
+    print STDERR "Usage: test-lab-4-a.pl directory\n";
     exit(1);
 }
 

@@ -8,20 +8,25 @@
 class extent_protocol {
  public:
   typedef int status;
-  typedef unsigned long long extentid_t;	// 64 bit?
-  enum xxstatus { OK, RPCERR, NOENT, IOERR };
+  typedef unsigned long long extentid_t;
+  enum xxstatus { OK, RPCERR, NOENT, IOERR, FBIG};
   enum rpc_numbers {
     put = 0x6001,
     get,
     getattr,
-    remove
+    remove, /* removes a specified buf */
+    pget, /* get partial content of a buf */
+    update, /* update specified range of a buf */
+    resize, /* resize a specified buf */
+    poke /* check if an inum exists; does not return content */
   };
+  static const unsigned int maxextent = 8192*1000;
 
   struct attr {
-    unsigned int atime;	// access time
-    unsigned int mtime;	// modification time
-    unsigned int ctime;	// change attributes. Touch?
-    unsigned int size;	// size
+    unsigned int atime;
+    unsigned int mtime;
+    unsigned int ctime;
+    unsigned int size;
   };
 };
 

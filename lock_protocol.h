@@ -13,6 +13,7 @@ class lock_protocol {
   enum rpc_numbers {
     acquire = 0x7001,
     release,
+    subscribe,	// for lab 5
     stat
   };
 };

@@ -24,7 +24,7 @@ use strict;
 $| = 1;
 
 if($#ARGV != 1){
-    print STDERR "Usage: test-lab-2-b.pl directory1 directory2\n";
+    print STDERR "Usage: test-lab-3.pl directory1 directory2\n";
     exit(1);
 }
 my $dir1 = $ARGV[0];
@@ -60,11 +60,6 @@ print "OK\n";
 
 print "Write into the middle of an existing file: ";
 writeat($dir1, $f1, 190);
-checkcontent($dir1, $f1);
-print "OK\n";
-
-print "Write beyond the end of an existing file: ";
-writeat($dir1, $f1, 65536);
 checkcontent($dir1, $f1);
 print "OK\n";
 
@@ -167,12 +162,6 @@ sub writeat {
     my $contents = rand();
 
     my $x = $files->{$name};
-    if (length($x) < $off + length($contents)) {
-      my $nappend = $off + length($contents) - length($x);
-      for (my $i=0; $i < $nappend; $i++) {
-        $x .= "\0";
-      }
-    }
     substr($x, $off, length($contents)) = $contents;
     $files->{$name} = $x;
     
