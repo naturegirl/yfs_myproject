@@ -130,7 +130,15 @@ fuseserver_createhelper(fuse_ino_t parent, const char *name,
   e->entry_timeout = 0.0;
   e->generation = 0;
   // You fill this in for Lab 2
-  return yfs_client::NOENT;
+  int r = yfs_client::NOENT;
+
+  fuse_ino_t new_ino = (fuse_ino_t)yfs->creat(parent, name);
+  if (new_ino > 0) {
+    memset(e, 0, sizeof(struct fuse_entry_param));
+    e->ino = new_ino;
+    r = getattr(e->ino, e->attr);
+  }
+  return r;
 }
 
 void
@@ -165,6 +173,7 @@ void fuseserver_mknod( fuse_req_t req, fuse_ino_t parent,
   }
 }
 
+// modified by me
 void
 fuseserver_lookup(fuse_req_t req, fuse_ino_t parent, const char *name)
 {
@@ -180,6 +189,14 @@ fuseserver_lookup(fuse_req_t req, fuse_ino_t parent, const char *name)
   // `parent' in YFS. If the file was found, initialize e.ino and
   // e.attr appropriately.
 
+  yfs_client::inum item = yfs->ilookup(parent, name);
+  if (item) {
+	  e.ino = (fuse_ino_t) item;
+	  if (getattr(e.ino, e.attr) != yfs_client::OK)
+		  found = false;
+      else
+    	  found = true;
+  }
   if (found)
     fuse_reply_entry(req, &e);
   else
@@ -192,12 +209,13 @@ struct dirbuf {
     size_t size;
 };
 
+// add directory to dirbuf
 void dirbuf_add(struct dirbuf *b, const char *name, fuse_ino_t ino)
 {
-    struct stat stbuf;
+    struct stat stbuf;	// file stats
     size_t oldsize = b->size;
-    b->size += fuse_dirent_size(strlen(name));
-    b->p = (char *) realloc(b->p, b->size);
+    b->size += fuse_dirent_size(strlen(name));	// + size of given dir with name
+    b->p = (char *) realloc(b->p, b->size);		// reallocate new size to pointer
     memset(&stbuf, 0, sizeof(stbuf));
     stbuf.st_ino = ino;
     fuse_add_dirent(b->p + oldsize, name, &stbuf, b->size);
@@ -205,6 +223,7 @@ void dirbuf_add(struct dirbuf *b, const char *name, fuse_ino_t ino)
 
 #define min(x, y) ((x) < (y) ? (x) : (y))
 
+// how much free space
 int reply_buf_limited(fuse_req_t req, const char *buf, size_t bufsize,
           off_t off, size_t maxsize)
 {
@@ -214,6 +233,7 @@ int reply_buf_limited(fuse_req_t req, const char *buf, size_t bufsize,
     return fuse_reply_buf(req, NULL, 0);
 }
 
+// modified by me
 void
 fuseserver_readdir(fuse_req_t req, fuse_ino_t ino, size_t size,
           off_t off, struct fuse_file_info *fi)
@@ -234,7 +254,16 @@ fuseserver_readdir(fuse_req_t req, fuse_ino_t ino, size_t size,
   // You fill this in for Lab 2
   // Ask the yfs_client for the file names / i-numbers
   // in directory inum, and call dirbuf_add() for each.
+  // fill in the b data structure using dirbuf_add
 
+  	// hope this is right
+  std::vector<yfs_client::dirent> entries;
+  if (yfs->listdir(inum, entries) == yfs_client::OK) {
+    std::vector<yfs_client::dirent>::iterator it;
+    for (it = entries.begin(); it != entries.end(); ++it) {
+      dirbuf_add(&b, it->name.c_str(), it->inum);
+    }
+  }
 
   reply_buf_limited(req, b.p, b.size, off, size);
   free(b.p);
@@ -248,6 +277,7 @@ fuseserver_open(fuse_req_t req, fuse_ino_t ino,
   fuse_reply_open(req, fi);
 }
 
+// modified by me
 void
 fuseserver_mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
      mode_t mode)
@@ -259,6 +289,8 @@ fuseserver_mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
   e.generation = 0;
 
   // You fill this in for Lab 3
+
+  // Todo ??
 #if 0
   fuse_reply_entry(req, &e);
 #else
@@ -273,6 +305,8 @@ fuseserver_unlink(fuse_req_t req, fuse_ino_t parent, const char *name)
   // You fill this in for Lab 3
   // Success:	fuse_reply_err(req, 0);
   // Not found:	fuse_reply_err(req, ENOENT);
+
+	// Todo ??
   fuse_reply_err(req, ENOSYS);
 }
 
