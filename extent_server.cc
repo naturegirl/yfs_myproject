@@ -8,7 +8,12 @@
 #include <sys/stat.h>
 #include <fcntl.h>
 
-extent_server::extent_server() {}
+extent_server::extent_server() {
+	// stupid, forgot to init root server=__=
+	 int i;
+	 put(1, "", i);
+	 pthread_mutex_init(&m, NULL);
+}
 
 
 int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &)
@@ -27,6 +32,7 @@ int extent_server::put(extent_protocol::extentid_t id, std::string buf, int &)
 
 int extent_server::get(extent_protocol::extentid_t id, std::string &buf)
 {
+
   // You fill this in for Lab 2.
 	int r = extent_protocol::NOENT;	// possible that we don't find it
 	pthread_mutex_lock(&m);
@@ -42,6 +48,7 @@ int extent_server::get(extent_protocol::extentid_t id, std::string &buf)
 
 int extent_server::getattr(extent_protocol::extentid_t id, extent_protocol::attr &a)
 {
+
   // You fill this in for Lab 2.
   // You replace this with a real implementation. We send a phony response
   // for now because it's difficult to get FUSE to do anything (including
