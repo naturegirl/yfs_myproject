@@ -248,3 +248,30 @@ yfs_client::read(inum inum, size_t size, off_t off, char* ret, size_t &n)
 	printf("total size: %d\n", n);
 	return OK;
 }
+
+// added by me
+int
+yfs_client::write(inum inum, const char* buf, size_t size, off_t off, size_t &n)
+{
+	std::string content;
+	std::string temp(buf);
+	printf("yfs_client write: %d %d\n", size, off);
+	for (int i = 0; i < size; ++i)
+		printf("%c", buf[i]);
+	printf("\n");
+	if (ec->get(inum,content) == extent_protocol::NOENT)
+		return NOENT;
+	if (content.length() < off+size) {
+		printf("resize: before: %d\n", content.length());
+		size_t i = content.length();
+		content.resize(off+size, '\0');
+		for(; i <= off+size; ++i)
+			content[i] = '\0';
+		printf("resize: after: %d\n", content.length());
+	}
+	content.replace(off, size, buf, size);
+	ec->put(inum, content);
+	n = size;
+	printf("%d, %d, %s\n", n, content.length(), content.c_str());
+	return OK;
+}

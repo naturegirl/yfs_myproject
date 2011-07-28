@@ -118,11 +118,16 @@ fuseserver_write(fuse_req_t req, fuse_ino_t ino,
   struct fuse_file_info *fi)
 {
   // You fill this in for Lab 2
-#if 0
-  fuse_reply_write(req, bytes_written);
-#else
-  fuse_reply_err(req, ENOSYS);
-#endif
+	size_t n;
+	std::string temp(buf);
+	printf("%d %d %s\n", size, off, temp.c_str());
+	yfs_client::status ret = yfs->write(ino, buf, size, off, n);
+	if (ret == yfs_client::FBIG)	// file too big
+		fuse_reply_err(req, ENOMEM);
+	else if (ret == yfs_client::NOENT)
+		fuse_reply_err(req, ENOENT);
+	else
+		fuse_reply_write(req, n);
 }
 
 yfs_client::status

@@ -45,11 +45,14 @@ class yfs_client {
   int getfile(inum, fileinfo &);
   int getdir(inum, dirinfo &);
 
-  inum creat(inum parent, std::string name);	// added by me
+  // added by me
+  inum creat(inum parent, std::string name);
   int listdir(inum, std::vector<dirent> &);
-  inum ilookup(inum di, std::string name);	// added by me
+  inum ilookup(inum di, std::string name);
   int setattr(inum, off_t, struct stat&);
   int read(inum, size_t, off_t, char*, size_t&);
+  int write(inum, const char*, size_t, off_t, size_t&);
+
 };
 
 #endif 
