@@ -86,14 +86,15 @@ fuseserver_setattr(fuse_req_t req, fuse_ino_t ino, struct stat *attr, int to_set
     printf("   fuseserver_setattr set size to %zu\n", attr->st_size);
     struct stat st;
     // You fill this in for Lab 2
-#if 0
-    fuse_reply_attr(req, &st, 0);
-#else
-    fuse_reply_err(req, ENOSYS);
-#endif
-  } else {
-    fuse_reply_err(req, ENOSYS);
+    if (yfs->setattr(ino, attr->st_size, st) == yfs_client::OK) {
+    	getattr((yfs_client::inum)ino, st);
+    	fuse_reply_attr(req, &st, 0);
+    }
+    else
+    	fuse_reply_err(req, ENOENT);	// file not found
   }
+  else
+	  fuse_reply_err(req,ENOSYS);	// function not implemented
 }
 
 void
@@ -101,11 +102,14 @@ fuseserver_read(fuse_req_t req, fuse_ino_t ino, size_t size,
       off_t off, struct fuse_file_info *fi)
 {
   // You fill this in for Lab 2
-#if 0
-  fuse_reply_buf(req, buf, size);
-#else
-  fuse_reply_err(req, ENOSYS);
-#endif
+	char *buf = (char*)malloc(size);
+	printf("fuse read: %d %d\n", size, off);
+	size_t n;
+	if (yfs->read(ino, size, off, buf, n) == yfs_client::OK)
+		fuse_reply_buf(req, buf, n);
+	else
+		fuse_reply_buf(req, ENOENT);
+	free(buf);
 }
 
 void

@@ -216,6 +216,7 @@ routine:
   return new_inum;
 }
 
+
 // added by me
 int
 yfs_client::setattr(inum inum, off_t size, struct stat& st)
@@ -227,8 +228,23 @@ yfs_client::setattr(inum inum, off_t size, struct stat& st)
 	ec->getattr(inum, a);
 
 	buf.resize(size);
-	ec->put(file,buf);
+	ec->put(inum,buf);
 
 	return OK;
 }
 
+// added by me
+int
+yfs_client::read(inum inum, size_t size, off_t off, char* ret, size_t &n)
+{
+	std::string buf;
+	if (ec->get(inum, buf) == extent_protocol::NOENT)
+		return NOENT;
+	printf("read at: %d %d ", size, off);
+	std::string forRet = buf.substr(off,size);
+	for (int i = 0; i < size; ++i)
+		ret[i] = forRet[i];
+	n = forRet.length();
+	printf("total size: %d\n", n);
+	return OK;
+}
