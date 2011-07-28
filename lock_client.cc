@@ -23,17 +23,21 @@ lock_client::stat(lock_protocol::lockid_t lid)
 {
   int r;
   int ret = cl->call(lock_protocol::stat, cl->id(), lid, r);
-  VERIFY (ret == lock_protocol::OK);
+  assert (ret == lock_protocol::OK);
   return r;
 }
 
 lock_protocol::status
 lock_client::acquire(lock_protocol::lockid_t lid)
 {
+  int unused;
+  return cl->call(lock_protocol::acquire, cl->id(), lid, unused);
 }
 
 lock_protocol::status
 lock_client::release(lock_protocol::lockid_t lid)
 {
+  int unused;
+  return cl->call(lock_protocol::release, cl->id(), lid, unused);
 }
 

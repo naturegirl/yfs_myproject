@@ -1,6 +1,5 @@
 #include <fcntl.h>
 #include <sys/types.h>
-#include <sys/time.h>
 #include <netinet/tcp.h>
 #include <errno.h>
 #include <signal.h>
@@ -11,8 +10,6 @@
 #include "slock.h"
 #include "pollmgr.h"
 #include "jsl_log.h"
-#include "gettime.h"
-#include "lang/verify.h"
 
 #define MAX_PDU (10<<20) //maximum PDF is 10M
 
@@ -26,26 +23,24 @@ connection::connection(chanmgr *m1, int f1, int l1)
 	fcntl(fd_, F_SETFL, flags);
 
 	signal(SIGPIPE, SIG_IGN);
-	VERIFY(pthread_mutex_init(&m_,0)==0);
-	VERIFY(pthread_mutex_init(&ref_m_,0)==0);
-	VERIFY(pthread_cond_init(&send_wait_,0)==0);
-	VERIFY(pthread_cond_init(&send_complete_,0)==0);
- 
-        VERIFY(gettimeofday(&create_time_, NULL) == 0); 
+	assert(pthread_mutex_init(&m_,0)==0);
+	assert(pthread_mutex_init(&ref_m_,0)==0);
+	assert(pthread_cond_init(&send_wait_,0)==0);
+	assert(pthread_cond_init(&send_complete_,0)==0);
 
 	PollMgr::Instance()->add_callback(fd_, CB_RDONLY, this);
 }
 
 connection::~connection()
 {
-	VERIFY(dead_);
-	VERIFY(pthread_mutex_destroy(&m_)== 0);
-	VERIFY(pthread_mutex_destroy(&ref_m_)== 0);
-	VERIFY(pthread_cond_destroy(&send_wait_) == 0);
-	VERIFY(pthread_cond_destroy(&send_complete_) == 0);
+	assert(dead_);
+	assert(pthread_mutex_destroy(&m_)== 0);
+	assert(pthread_mutex_destroy(&ref_m_)== 0);
+	assert(pthread_cond_destroy(&send_wait_) == 0);
+	assert(pthread_cond_destroy(&send_complete_) == 0);
 	if (rpdu_.buf)
 		free(rpdu_.buf);
-	VERIFY(!wpdu_.buf);
+	assert(!wpdu_.buf);
 	close(fd_);
 }
 
@@ -83,18 +78,18 @@ connection::closeconn()
 void
 connection::decref()
 {
-	VERIFY(pthread_mutex_lock(&ref_m_)==0);
+	assert(pthread_mutex_lock(&ref_m_)==0);
 	refno_ --;
-	VERIFY(refno_>=0);
+	assert(refno_>=0);
 	if (refno_==0) {
-		VERIFY(pthread_mutex_lock(&m_)==0);
+		assert(pthread_mutex_lock(&m_)==0);
 		if (dead_) {
-			VERIFY(pthread_mutex_unlock(&ref_m_)==0);
-			VERIFY(pthread_mutex_unlock(&m_)==0);
+			assert(pthread_mutex_unlock(&ref_m_)==0);
+			assert(pthread_mutex_unlock(&m_)==0);
 			delete this;
 			return;
 		}
-		VERIFY(pthread_mutex_unlock(&m_)==0);
+		assert(pthread_mutex_unlock(&m_)==0);
 	}
 	pthread_mutex_unlock(&ref_m_);
 }
@@ -106,27 +101,13 @@ connection::ref()
 	return refno_;
 }
 
-int
-connection::compare(connection *another)
-{
-        if (create_time_.tv_sec > another->create_time_.tv_sec)
-                return 1;
-        if (create_time_.tv_sec < another->create_time_.tv_sec)
-                return -1;
-        if (create_time_.tv_usec > another->create_time_.tv_usec)
-                return 1;
-        if (create_time_.tv_usec < another->create_time_.tv_usec)
-                return -1;
-        return 0;
-}
-
 bool
 connection::send(char *b, int sz)
 {
 	ScopedLock ml(&m_);
 	waiters_++;
 	while (!dead_ && wpdu_.buf) {
-		VERIFY(pthread_cond_wait(&send_wait_, &m_)==0);
+		assert(pthread_cond_wait(&send_wait_, &m_)==0);
 	}
 	waiters_--;
 	if (dead_) {
@@ -145,16 +126,16 @@ connection::send(char *b, int sz)
 
 	if (!writepdu()) {
 		dead_ = true;
-		VERIFY(pthread_mutex_unlock(&m_) == 0);
+		assert(pthread_mutex_unlock(&m_) == 0);
 		PollMgr::Instance()->block_remove_fd(fd_);
-		VERIFY(pthread_mutex_lock(&m_) == 0);
+		assert(pthread_mutex_lock(&m_) == 0);
 	}else{
 		if (wpdu_.solong == wpdu_.sz) {
 		}else{
 			//should be rare to need to explicitly add write callback
 			PollMgr::Instance()->add_callback(fd_, CB_WRONLY, this);
 			while (!dead_ && wpdu_.solong >= 0 && wpdu_.solong < wpdu_.sz) {
-				VERIFY(pthread_cond_wait(&send_complete_,&m_) == 0);
+				assert(pthread_cond_wait(&send_complete_,&m_) == 0);
 			}
 		}
 	}
@@ -171,8 +152,8 @@ void
 connection::write_cb(int s)
 {
 	ScopedLock ml(&m_);
-	VERIFY(!dead_);
-	VERIFY(fd_ == s);
+	assert(!dead_);
+	assert(fd_ == s);
 	if (wpdu_.sz == 0) {
 		PollMgr::Instance()->del_callback(fd_,CB_WRONLY);
 		return;
@@ -181,7 +162,7 @@ connection::write_cb(int s)
 		PollMgr::Instance()->del_callback(fd_, CB_RDWR);
 		dead_ = true;
 	}else{
-		VERIFY(wpdu_.solong >= 0);
+		assert(wpdu_.solong >= 0);
 		if (wpdu_.solong < wpdu_.sz) {
 			return;
 		}
@@ -194,7 +175,7 @@ void
 connection::read_cb(int s)
 {
 	ScopedLock ml(&m_);
-	VERIFY(fd_ == s);
+	assert(fd_ == s);
 	if (dead_)  {
 		return;
 	}
@@ -222,7 +203,7 @@ connection::read_cb(int s)
 bool
 connection::writepdu()
 {
-	VERIFY(wpdu_.solong >= 0);
+	assert(wpdu_.solong >= 0);
 	if (wpdu_.solong == wpdu_.sz)
 		return true;
 
@@ -255,7 +236,7 @@ connection::readpdu()
 		}
 
 		if (n < 0) {
-			VERIFY(errno!=EAGAIN);
+			assert(errno!=EAGAIN);
 			return false;
 		}
 
@@ -274,9 +255,9 @@ connection::readpdu()
 		}
 
 		rpdu_.sz = sz;
-		VERIFY(rpdu_.buf == NULL);
+		assert(rpdu_.buf == NULL);
 		rpdu_.buf = (char *)malloc(sz+sizeof(sz));
-		VERIFY(rpdu_.buf);
+		assert(rpdu_.buf);
 		bcopy(&sz1,rpdu_.buf,sizeof(sz));
 		rpdu_.solong = sizeof(sz);
 	}
@@ -299,7 +280,7 @@ tcpsconn::tcpsconn(chanmgr *m1, int port, int lossytest)
 : mgr_(m1), lossy_(lossytest)
 {
 
-	VERIFY(pthread_mutex_init(&m_,NULL) == 0);
+	assert(pthread_mutex_init(&m_,NULL) == 0);
 
 	struct sockaddr_in sin;
 	memset(&sin, 0, sizeof(sin));
@@ -309,7 +290,7 @@ tcpsconn::tcpsconn(chanmgr *m1, int port, int lossytest)
 	tcp_ = socket(AF_INET, SOCK_STREAM, 0);
 	if(tcp_ < 0){
 		perror("tcpsconn::tcpsconn accept_loop socket:");
-		VERIFY(0);
+		assert(0);
 	}
 
 	int yes = 1;
@@ -318,33 +299,30 @@ tcpsconn::tcpsconn(chanmgr *m1, int port, int lossytest)
 
 	if(bind(tcp_, (sockaddr *)&sin, sizeof(sin)) < 0){
 		perror("accept_loop tcp bind:");
-		VERIFY(0);
+		assert(0);
 	}
 
 	if(listen(tcp_, 1000) < 0) {
 		perror("tcpsconn::tcpsconn listen:");
-		VERIFY(0);
+		assert(0);
 	}
-
-	jsl_log(JSL_DBG_2, "tcpsconn::tcpsconn listen on %d %d\n", port, 
-		sin.sin_port);
 
 	if (pipe(pipe_) < 0) {
 		perror("accept_loop pipe:");
-		VERIFY(0);
+		assert(0);
 	}
 
 	int flags = fcntl(pipe_[0], F_GETFL, NULL);
 	flags |= O_NONBLOCK;
 	fcntl(pipe_[0], F_SETFL, flags);
 
-	VERIFY((th_ = method_thread(this, false, &tcpsconn::accept_conn)) != 0); 
+	assert((th_ = method_thread(this, false, &tcpsconn::accept_conn)) != 0); 
 }
 
 tcpsconn::~tcpsconn()
 {
-	VERIFY(close(pipe_[1]) == 0);
-	VERIFY(pthread_join(th_, NULL) == 0);
+	assert(close(pipe_[1]) == 0);
+	assert(pthread_join(th_, NULL) == 0);
 
 	//close all the active connections
 	std::map<int, connection *>::iterator i;
@@ -402,7 +380,7 @@ tcpsconn::accept_conn()
 			} else {
 				perror("accept_conn select:");
 				jsl_log(JSL_DBG_OFF, "tcpsconn::accept_conn failure errno %d\n",errno);
-				VERIFY(0);
+				assert(0);
 	                }
 		}
 
@@ -414,7 +392,7 @@ tcpsconn::accept_conn()
 		else if (FD_ISSET(tcp_, &rfds)) {
 			process_accept();
 		} else {
-			VERIFY(0);
+			assert(0);
 		}
 	}
 }

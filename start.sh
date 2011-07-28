@@ -51,17 +51,15 @@ echo "starting ./extent_server $EXTENT_PORT > extent_server.log 2>&1 &"
 ./extent_server $EXTENT_PORT > extent_server.log 2>&1 &
 sleep 1
 
-rm -rf $YFSDIR1
-mkdir $YFSDIR1 || exit 1
+mkdir -p $YFSDIR1
 sleep 1
 echo "starting ./yfs_client $YFSDIR1 $EXTENT_PORT $LOCK_PORT > yfs_client1.log 2>&1 &"
 ./yfs_client $YFSDIR1 $EXTENT_PORT $LOCK_PORT > yfs_client1.log 2>&1 &
 sleep 1
 
-rm -rf $YFSDIR2
-mkdir $YFSDIR2 || exit 1
+mkdir -p $YFSDIR2
 sleep 1
-echo "starting ./yfs_client $YFSDIR2 $EXTENT_PORT $LOCK_PORT > yfs_client2.log 2>&1 &"
+echo "./yfs_client $YFSDIR2 $EXTENT_PORT $LOCK_PORT > yfs_client2.log 2>&1 &"
 ./yfs_client $YFSDIR2 $EXTENT_PORT $LOCK_PORT > yfs_client2.log 2>&1 &
 
 sleep 2

@@ -10,8 +10,11 @@
 #include <vector>
 #include <stdlib.h>
 #include <stdio.h>
+<<<<<<< HEAD
 #include "lang/verify.h"
 #include "lock_client_cache.h"
+=======
+>>>>>>> lab3
 
 // must be >= 2
 int nt = 10; //XXX: lab1's rpc handlers are blocking. Since rpcs uses a thread pool of 10 threads, we cannot test more than 10 blocking rpc.
@@ -30,7 +33,7 @@ pthread_mutex_t count_mutex;
 void
 check_grant(lock_protocol::lockid_t lid)
 {
-  ScopedLock ml(&count_mutex);
+  pthread_mutex_lock(&count_mutex);
   int x = lid & 0xff;
   if(ct[x] != 0){
     fprintf(stderr, "error: server granted %016llx twice\n", lid);
@@ -38,18 +41,20 @@ check_grant(lock_protocol::lockid_t lid)
     exit(1);
   }
   ct[x] += 1;
+  pthread_mutex_unlock(&count_mutex);
 }
 
 void
 check_release(lock_protocol::lockid_t lid)
 {
-  ScopedLock ml(&count_mutex);
+  pthread_mutex_lock(&count_mutex);
   int x = lid & 0xff;
   if(ct[x] != 1){
     fprintf(stderr, "error: client released un-held lock %016llx\n",  lid);
     exit(1);
   }
   ct[x] -= 1;
+  pthread_mutex_unlock(&count_mutex);
 }
 
 void
@@ -171,7 +176,7 @@ main(int argc, char *argv[])
       }
     }
 
-    VERIFY(pthread_mutex_init(&count_mutex, NULL) == 0);
+    assert(pthread_mutex_init(&count_mutex, NULL) == 0);
 
     printf("cache lock client\n");
     for (int i = 0; i < nt; i++) lc[i] = new lock_client_cache(dst);
@@ -185,7 +190,7 @@ main(int argc, char *argv[])
       for (int i = 0; i < nt; i++) {
 	int *a = new int (i);
 	r = pthread_create(&th[i], NULL, test2, (void *) a);
-	VERIFY (r == 0);
+	assert (r == 0);
       }
       for (int i = 0; i < nt; i++) {
 	pthread_join(th[i], NULL);
@@ -199,7 +204,7 @@ main(int argc, char *argv[])
       for (int i = 0; i < nt; i++) {
 	int *a = new int (i);
 	r = pthread_create(&th[i], NULL, test3, (void *) a);
-	VERIFY (r == 0);
+	assert (r == 0);
       }
       for (int i = 0; i < nt; i++) {
 	pthread_join(th[i], NULL);
@@ -213,7 +218,7 @@ main(int argc, char *argv[])
       for (int i = 0; i < 2; i++) {
 	int *a = new int (i);
 	r = pthread_create(&th[i], NULL, test4, (void *) a);
-	VERIFY (r == 0);
+	assert (r == 0);
       }
       for (int i = 0; i < 2; i++) {
 	pthread_join(th[i], NULL);
@@ -228,7 +233,7 @@ main(int argc, char *argv[])
       for (int i = 0; i < nt; i++) {
 	int *a = new int (i);
 	r = pthread_create(&th[i], NULL, test5, (void *) a);
-	VERIFY (r == 0);
+	assert (r == 0);
       }
       for (int i = 0; i < nt; i++) {
 	pthread_join(th[i], NULL);

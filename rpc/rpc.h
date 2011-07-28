@@ -23,7 +23,6 @@ class rpc_const {
 		static const int atmostonce_failure = -4;
 		static const int oldsrv_failure = -5;
 		static const int bind_failure = -6;
-		static const int cancel_failure = -7;
 };
 
 // rpc client endpoint.
@@ -57,28 +56,15 @@ class rpcc : public chanmgr {
 		unsigned int xid_;
 		int lossytest_;
 		bool retrans_;
-		bool reachable_;
 
 		connection *chan_;
 
 		pthread_mutex_t m_; // protect insert/delete to calls[]
 		pthread_mutex_t chan_m_;
 
-		bool destroy_wait_;
-		pthread_cond_t destroy_wait_c_;
-
 		std::map<int, caller *> calls_;
 		std::list<unsigned int> xid_rep_window_;
-                
-                struct request {
-                    request() { clear(); }
-                    void clear() { buf.clear(); xid = -1; }
-                    bool isvalid() { return xid != -1; }
-                    std::string buf;
-                    int xid;
-                };
-                struct request dup_req_;
-                int xid_rep_done_;
+
 	public:
 
 		rpcc(sockaddr_in d, bool retrans=true);
@@ -95,12 +81,15 @@ class rpcc : public chanmgr {
 
 		int bind(TO to = to_max);
 
+<<<<<<< HEAD
 		void set_reachable(bool r) { reachable_ = r; }
 
 		void cancel();
                 
                 int islossy() { return lossytest_ > 0; }
 
+=======
+>>>>>>> lab3
 		int call1(unsigned int proc, 
 				marshall &req, unmarshall &rep, TO to);
 
@@ -306,7 +295,6 @@ class rpcs : public chanmgr {
 	std::map<int, int> counts_;
 
 	int lossytest_; 
-	bool reachable_;
 
 	// map proc # to function
 	std::map<int, handler *> procs_;
@@ -339,8 +327,6 @@ class rpcs : public chanmgr {
 
 	//RPC handler for clients binding
 	int rpcbind(int a, int &r);
-
-	void set_reachable(bool r) { reachable_ = r; }
 
 	bool got_pdu(connection *c, char *b, int sz);
 
