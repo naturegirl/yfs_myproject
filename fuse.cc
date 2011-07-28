@@ -25,6 +25,7 @@ int id() {
   return myid;
 }
 
+// set attributes of stat
 yfs_client::status
 getattr(yfs_client::inum inum, struct stat &st)
 {
@@ -297,13 +298,16 @@ fuseserver_mkdir(fuse_req_t req, fuse_ino_t parent, const char *name,
 
   printf("fuseserver_readdir\n");
   // In yfs, timeouts are always set to 0.0, and generations are always set to 0
+  /*
   e.attr_timeout = 0.0;
   e.entry_timeout = 0.0;
   e.generation = 0;
-
+   */
   // You fill this in for Lab 3
 
   yfs->mkdir(parent, name);
+  printf("done with yfs->mkdir\n");
+
 /*
   // Todo ??
 #if 0
